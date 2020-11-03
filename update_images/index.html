@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="mr">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>PuneVVSPC</title>
+		<link rel="stylesheet" type="text/css" href="../css/variables.css">
+		<link rel="stylesheet" type="text/css" href="../css/design.css">
+	</head>
+	<body>
+		<header class="cont">
+			<img class="l_float hide show_md revolve_r" src="../images/Logo2.png">
+			<h4 class="hide show_md" style="text-align: center;">"सदैव सेवेस सज्ज"</h4>
+			<h1 style="text-align: center;">पुणे वृत्तपत्र विक्रेता संघ</h1>
+			<h2 style="text-align: center;">(पुणे, पिंपरी चिंचवड)</h2>
+		</header>
+		<main class="cont">
+			
+		</main>
+		<script src="https://apis.google.com/js/api.js"></script>
+		<script type="text/javascript">
+  /**
+   * Sample JavaScript code for drive.children.list
+   * See instructions for running APIs Explorer code samples locally:
+   * https://developers.google.com/explorer-help/guides/code_samples#javascript
+   */
+
+	var listPhotoID=[];
+	function authenticate()
+	{
+		return gapi.auth2.getAuthInstance()
+			.signIn({scope: "https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/spreadsheets"})
+			.then(function(){console.log("Sign-in successful");},function(err){console.error("Error signing in",err);});
+	}
+	function loadClient()
+	{
+		gapi.client.setApiKey("AIzaSyAWPUnhBHI7gH7J7k0rINqD0sFzesZ_gWE");
+		return gapi.client.load("https://content.googleapis.com/discovery/v1/apis/drive/v2/rest")
+			.then(function(){console.log("GAPI client loaded")},function(err){console.error("Error loading GAPI client for API",err);});
+	}
+	function loadClient2()
+	{
+		gapi.client.setApiKey("AIzaSyAWPUnhBHI7gH7J7k0rINqD0sFzesZ_gWE");
+		return gapi.client.load("https://sheets.googleapis.com/$discovery/rest?version=v4")
+			.then(function(){console.log("GAPI client loaded")},function(err){console.error("Error loading GAPI client for API",err);});
+	}
+	// Make sure the client is loaded and sign-in is complete before calling this method.
+	function execute()
+	{
+		var queryString = window.location.search;
+		var urlParams = new URLSearchParams(queryString);
+		var folderId = urlParams.get('folderId')
+		return gapi.client.drive.children.list(
+			{
+				"folderId": folderId,
+				"maxResults": 1000
+			}
+		)
+		.then(
+			function(response)
+			{
+				console.log(response.result.items);
+				for(var i=0;i<response.result.items.length;i++)
+				{
+					listPhotoID.push(response.result.items[i].id);
+				}
+			},
+			function(err)
+			{
+				console.error("Execute error", err);
+			}
+		);
+	}
+	function execute2()
+	{
+		var queryString = window.location.search;
+		var urlParams = new URLSearchParams(queryString);
+		var sheetID = urlParams.get('sheetID')
+		return gapi.client.sheets.spreadsheets.values.append
+		({
+			"spreadsheetId": sheetID,
+			"range": "A1",
+			"includeValuesInResponse": true,
+			"insertDataOption": "OVERWRITE",
+			"valueInputOption": "USER_ENTERED",
+			"resource":
+			{
+				"values":
+				[
+					listPhotoID
+				]
+			}
+		})
+		.then(function(response){console.log("Response", response);},function(err){console.error("Execute error",err);});
+	}
+	gapi.load("client:auth2",function()
+	{
+		gapi.auth2.init({client_id: "867739849624-l85tgba52pb8dpiqm2ruq8igk95h83b9.apps.googleusercontent.com"});
+	});
+	function show(form)
+	{
+		console.log(form);
+	}
+	function proceed()
+	{
+		authenticate().then(loadClient).then(loadClient2);
+		document.getElementById('sign_in').style.display="none";
+		document.getElementById('sign_in').style.display="revert";
+	}
+</script>
+
+<form id="sign_in">
+	<input type="button" style="border: 1px solid black;" onclick="proceed()" value="Sign in"><br>
+</form>
+<form style='display: none;' id="options">
+	<label>FolderId: </label>
+	<input type="text" name="folderId" style="border: 1px solid black;"><br>
+	<input type="button" name="getImageID" value="Get images" onclick="show(this.parentNode)"><br>
+	<label>SheetID: </label>
+	<input type="text" name="sheetID" style="border: 1px solid black;"><br>
+	<input type="button" name="postImageID" value="Post images" onclick="show(this.parentNode)"><br>
+</form>
+<button onclick="">authorize and load</button>
+<button onclick="execute()">execute</button>
+<button onclick="execute2()">execute2</button>
+
+		</script>
+	</body>
+</html>

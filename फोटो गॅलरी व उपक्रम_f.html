@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="mr">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>PuneVVSPC</title>
+		<link rel="stylesheet" type="text/css" href="./css/variables.css">
+		<link rel="stylesheet" type="text/css" href="./css/design.css">
+	</head>
+	<body>
+		<main class="cont">
+			<div class="background_img hide_md"></div>
+			<section class="u1">
+				<h2>फोटो गॅलरी व उपक्रम</h2>
+				<section class="table_sec" id="sheet_fill">
+					<table class="cont" style="--table-column-width-1: 80%; --table-column-width-2: 20%;">
+						<thead>
+							<tr>
+								<th>उपक्रम</th><th>तारीख</th>
+							</tr>
+						</thead>
+						<tbody></tbody>
+					</table>
+				</section>
+			</section>
+			<section class="u1" id="images"></section>
+		</main>
+		<script type="text/javascript">
+			var done=0;
+			function clear()
+			{
+				document.getElementById('images').innerHTML="";
+				document.getElementById('images').parentNode.getElementsByTagName("section")[0].innerHTML="";
+			}
+			function show_images(request_obj,param)
+			{
+				clear();
+				window.top["iframe_set_height"](window.top.document.getElementById('iframe_page'));
+				var images_arr=JSON.parse(request_obj.responseText.substring(28,request_obj.responseText.length-2)).feed.entry;
+				var event_name=document.createElement("h2");
+				event_name.classList.add("u1");
+				event_name.style.color="var(--main-color-2)";
+				event_name.insertAdjacentText("beforeend",param[1].replace(/&#8222;/g,'"'));
+				document.getElementById('images').insertAdjacentElement("beforeend",event_name)
+				if(images_arr)
+				{
+					for(var i=0;i<images_arr.length;i++)
+					{
+						var image=document.createElement("img");
+						image.src="https://drive.google.com/uc?id="+images_arr[i].content.$t;
+						image.classList.add("lg3");
+						image.classList.add("md2");
+						image.classList.add("u1");
+						document.getElementById('images').insertAdjacentElement("beforeend",image);
+						image.onload=function()
+						{
+							if(this.clientHeight<this.clientWidth)
+							{
+								this.classList.remove("lg3");
+								this.classList.add("lg3_2");
+							}
+							window.top["iframe_set_height"](window.top.document.getElementById('iframe_page'));
+						}
+					}
+				}
+				var drive_link_a=document.createElement("a");
+				drive_link_a.classList.add("u1");
+				drive_link_a.href=param[0];
+				drive_link_a.target="_blank";
+				drive_link_a.insertAdjacentText("beforeend","सर्व फोटो");
+				document.getElementById('images').insertAdjacentElement("beforeend",drive_link_a)
+				return;
+			}
+			var sheet_object;
+			function sheet_read(request_obj)
+			{
+				sheet_object=JSON.parse(request_obj.responseText.substring(28,request_obj.responseText.length-2)).feed.entry;
+				for(var i=0;i<(sheet_object.length)/4;i++)
+				{
+					// var sheet_row_onclick=request("https://spreadsheets.google.com/feeds/cells/'+sheet_object[4*i+3].content.$t+'/1/public/values?alt=json-in-script","show_images","{link: "'+sheet_object[4*i+2].content.$t+'", name: "'+sheet_object[4*i+0].content.$t+'"};");
+					var sheet_row=document.createElement("tr");
+					sheet_row.setAttribute("onclick",'request(\"https://spreadsheets.google.com/feeds/cells/'+sheet_object[4*i+3].content.$t+'/1/public/values?alt=json-in-script\",\"show_images\",\"'+sheet_object[4*i+2].content.$t+'\",\"'+sheet_object[4*i+0].content.$t.replace(/"/g,'&#8222;')+'\")');
+					var row_data1=document.createElement("td");
+					row_data1.insertAdjacentHTML("beforeend",sheet_object[4*i+0].content.$t);
+					sheet_row.insertAdjacentElement("beforeend",row_data1);
+					var row_data2=document.createElement("td");
+					row_data2.insertAdjacentHTML("beforeend",sheet_object[4*i+1].content.$t);
+					sheet_row.insertAdjacentElement("beforeend",row_data2);
+					// var sheet_row='<tr onclick="'+sheet_row_onclick+'"><td>'+sheet_object[4*i+0].content.$t+'</td><td>'+sheet_object[4*i+1].content.$t+'</td>';
+					document.getElementById('sheet_fill').getElementsByTagName('table')[0].getElementsByTagName('tbody')[0].insertAdjacentElement("beforeend",sheet_row);
+				}
+				return;
+			}
+			function request(path,func)
+			{
+				var param=[];
+				for(var i=2;i<arguments.length;i++)
+				{
+					param[i-2]=arguments[i];
+				}
+				var xmlhttp=new XMLHttpRequest();
+				xmlhttp.onreadystatechange=function()
+				{
+					if (this.readyState==4 && this.status==200)
+					{
+						window[func](this,param);
+					}
+				};
+				xmlhttp.open('GET',path,true); 
+				xmlhttp.send();
+				return;
+			}
+			request("https://spreadsheets.google.com/feeds/cells/1pz5Hp-USryz7Nv4N6DAxeyRcaEGK5Wrm23BShOKi3AY/1/public/values?alt=json-in-script","sheet_read");
+		</script>
+	</body>
+</html>
