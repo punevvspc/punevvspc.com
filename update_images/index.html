@@ -95,7 +95,10 @@
 	}
 	function proceed()
 	{
-		authenticate().then(loadClient).then(loadClient2);
+		authenticate().then(loadClient).then(loadClient2).then(continue);
+	}
+	function continue()
+	{
 		document.getElementById('sign_in').style.display="none";
 		document.getElementById('options').style.display="revert";
 	}
