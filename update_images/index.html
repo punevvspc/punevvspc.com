@@ -19,11 +19,7 @@
 		</main>
 		<script src="https://apis.google.com/js/api.js"></script>
 		<script type="text/javascript">
-  /**
-   * Sample JavaScript code for drive.children.list
-   * See instructions for running APIs Explorer code samples locally:
-   * https://developers.google.com/explorer-help/guides/code_samples#javascript
-   */
+
 
 	var listPhotoID=[];
 	function authenticate()
@@ -47,9 +43,7 @@
 	// Make sure the client is loaded and sign-in is complete before calling this method.
 	function execute()
 	{
-		var queryString = window.location.search;
-		var urlParams = new URLSearchParams(queryString);
-		var folderId = urlParams.get('folderId')
+		var folderId = document.getElementById('folderId').textContent;
 		return gapi.client.drive.children.list(
 			{
 				"folderId": folderId,
@@ -73,9 +67,7 @@
 	}
 	function execute2()
 	{
-		var queryString = window.location.search;
-		var urlParams = new URLSearchParams(queryString);
-		var sheetID = urlParams.get('sheetID')
+		var sheetID = document.getElementById('sheetID').textContent;
 		return gapi.client.sheets.spreadsheets.values.append
 		({
 			"spreadsheetId": sheetID,
@@ -114,15 +106,12 @@
 </form>
 <form style='display: none;' id="options">
 	<label>FolderId: </label>
-	<input type="text" name="folderId" style="border: 1px solid black;"><br>
-	<input type="button" name="getImageID" value="Get images" onclick="show(this.parentNode)"><br>
+	<input type="text" name="folderId" id="folderId" style="border: 1px solid black;"><br>
+	<input type="button" name="getImageID" value="Get images" onclick="execute()"><br>
 	<label>SheetID: </label>
-	<input type="text" name="sheetID" style="border: 1px solid black;"><br>
-	<input type="button" name="postImageID" value="Post images" onclick="show(this.parentNode)"><br>
+	<input type="text" name="sheetID" id="sheetID" style="border: 1px solid black;"><br>
+	<input type="button" name="postImageID" value="Post images" onclick="execute2()"><br>
 </form>
-<button onclick="">authorize and load</button>
-<button onclick="execute()">execute</button>
-<button onclick="execute2()">execute2</button>
 
 		</script>
 	</body>
