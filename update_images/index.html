@@ -22,6 +22,10 @@
 
 
 	var listPhotoID=[];
+	function resetImageID()
+	{
+		listPhotoID=[];
+	}
 	function authenticate()
 	{
 		return gapi.auth2.getAuthInstance()
@@ -69,7 +73,7 @@
 	function execute2()
 	{
 		var sheetID = document.getElementById('sheetID').value;
-		console.log(sheetID);
+		console.log(sheetID,listPhotoID);
 		return gapi.client.sheets.spreadsheets.values.append
 		({
 			"spreadsheetId": sheetID,
@@ -79,10 +83,7 @@
 			"valueInputOption": "USER_ENTERED",
 			"resource":
 			{
-				"values":
-				[
-					listPhotoID
-				]
+				"values": listPhotoID
 			}
 		})
 		.then(function(response){console.log("Response", response);},function(err){console.error("Execute error",err);});
@@ -112,7 +113,8 @@
 <form style='display: none;' id="options">
 	<label>FolderId: </label>
 	<input type="text" name="folderId" id="folderId" style="border: 1px solid black;"><br>
-	<input type="button" name="getImageID" value="Get images" onclick="execute()"><br>
+	<input type="button" name="getImageID" value="Get images" onclick="execute()">
+	<input type="button" name="resetImageID" value="Reset images" onclick="resetImageID()"><br>
 	<label>SheetID: </label>
 	<input type="text" name="sheetID" id="sheetID" style="border: 1px solid black;"><br>
 	<input type="button" name="postImageID" value="Post images" onclick="execute2()"><br>
