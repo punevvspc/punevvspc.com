@@ -43,7 +43,7 @@
 	// Make sure the client is loaded and sign-in is complete before calling this method.
 	function execute()
 	{
-		var folderId = document.getElementById('folderId').textContent;
+		var folderId = document.getElementById('folderId').value;
 		console.log(folderId);
 		return gapi.client.drive.children.list(
 			{
@@ -68,7 +68,7 @@
 	}
 	function execute2()
 	{
-		var sheetID = document.getElementById('sheetID').textContent;
+		var sheetID = document.getElementById('sheetID').value;
 		console.log(sheetID);
 		return gapi.client.sheets.spreadsheets.values.append
 		({
