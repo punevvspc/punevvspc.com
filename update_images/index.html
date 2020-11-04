@@ -95,14 +95,14 @@
 	{
 		console.log(form);
 	}
-	function proceed()
-	{
-		authenticate().then(loadClient).then(loadClient2).then(continue);
-	}
-	function continue()
+	function next()
 	{
 		document.getElementById('sign_in').style.display="none";
 		document.getElementById('options').style.display="revert";
+	}
+	function proceed()
+	{
+		authenticate().then(loadClient).then(loadClient2).then(next);
 	}
 </script>
 
