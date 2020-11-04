@@ -44,6 +44,7 @@
 	function execute()
 	{
 		var folderId = document.getElementById('folderId').textContent;
+		console.log(folderId);
 		return gapi.client.drive.children.list(
 			{
 				"folderId": folderId,
@@ -68,6 +69,7 @@
 	function execute2()
 	{
 		var sheetID = document.getElementById('sheetID').textContent;
+		console.log(sheetID);
 		return gapi.client.sheets.spreadsheets.values.append
 		({
 			"spreadsheetId": sheetID,
